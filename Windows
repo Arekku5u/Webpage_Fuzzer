@@ -1,0 +1,59 @@
+import sys
+import requests
+from colorama import init
+init()
+status_codes = {100:"\033[1;32;40mContinue",200:"\033[1;32;40mCan Resolve Host",101:"Switching Protocols",102:"Processing (WebDAV"
+                ,203:"Non-Authoritative Information",201:"Created",202:"\033[1;32;40mAccepted",204:"\033[1;31;40mNo Content",
+                205:"\033[1;33;40mReset Content",206:"\033[1;32;40mPartial Content",207:"Multi-Status (WebDAV)",
+                208:"\033[1;33;40mAlready Reported (WebDAV)",226:"IM Used",300:"\033[1;33;40mMultiple Choices",
+                301:"\033[1;33;40mMoved Permanently",302:"\033[1;33;40mFound",303:"\033[1;33;40mSee Other",304:"\033[1;33;40mNot Modified",
+                305:"\033[1;33;40mUse Proxy",307:"\033[1;33;40mTemporary Redirect",308:"\033[1;33;40mPermanent Redirect (experimental)",
+                400:"\033[1;31;40mBad Request",401:"\033[1;31;40mUnauthorized",402:"Payment Required",403:"\033[1;31;40mForbidden",
+                404:"\033[1;31;40mNot Found",405:"\033[1;31;40mMethod Not Allowed",406:"\033[1;31;40mNot Acceptable",407:"\033[1;31;40mProxy Authentication Required",
+                408:"\033[1;31;40mRequest Timeout",409:"\033[1;31;40mConflict",410:"\033[1;31;40mGone",411:"\033[1;31;40mLength Required",412:"\033[1;31;40mPrecondition Failed",
+                413:"Request Entity Too Large",414:"Request-URI Too Long",415:"Unsupported Media Type",
+                416:"Requested Range Not Satisfiable",417:"Expectation Failed",418:"I'm a teapot (RFC 2324",
+                420:"\033[1;31;40mEnhance Your Calm (Twitter)",422:"Unprocessable Entity (WebDAV)",423:"\033[1;31;40mLocked (WebDAV)",
+                424:"\033[1;31;40mFailed Dependency (WebDAV)",425:"Reserved for WebDAV",426:"Upgrade Required",
+                428:"\033[1;31;40mPrecondition Required",429:"\033[1;31;40mToo Many Requests",431:"\033[1;31;40mRequest Header Fields Too Large",
+                444:"\033[1;31;40mNo Response (Nginx)",449:"\033[1;31;40mRetry With (Microsoft)",
+                450:"BLocked by Windows Parental Controls (Windows)",451:"Unavailable For Legal Reasons",
+                499:"\033[1;31;40mClient Closed Request (Nginx)",500:"Internal Server Error",501:"Not Implemented",
+                502:"\033[1;31;40mBad Gateway",503:"Service Unavailable",504:"Gatewat Timeout",505:"HTTP Version Not Supported",
+                506:"Variant Also Negotiates",507:"Insufficient Storage",508:"Loop Detected (WebDAV)",
+                509:"Bandwidth Limit Exceeded (Apache)",510:"Not Extended",511:"Network AUthentication Required",
+                598:"Network read timeout error",599:"Network connect timeout error"}
+if len(sys.argv) == 1:
+    print("Usage: python fuzzer.py http://URL PATH_TO_WORDLIST \n")
+else:
+    print("Usage: python fuzzer.py http://URL PATH_TO_WORDLIST \n")
+    sys.argv.pop(0)
+    file = sys.argv[1]
+    webpage = sys.argv[0]
+    with open(file, "r") as wordlist:
+        word_list = []
+        for index in wordlist:
+            word_list.append(index.strip())
+    r = requests.get(webpage)
+    if r.status_code == 200:
+        for index in word_list:
+            new_url = webpage + '/' + index
+            page = requests.get(new_url)
+            status = page.status_code
+            for i in status_codes:
+                if status == i:
+                    if i == 404:
+                        pass
+                    else:
+                        print('\x1b[1;37;40m'+new_url, ':', status_codes[i], flush=False, end='')
+
+    else:
+        print("Could Not Resolve Host")
+           
+        
+                  
+            
+
+
+
+
