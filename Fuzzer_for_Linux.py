@@ -25,29 +25,71 @@ status_codes = {100:"\033[1;32;40mContinue \033[1;37;40m",200:"\033[1;32;40mCan 
         509:"Bandwidth Limit Exceeded (Apache)",510:"Not Extended",511:"Network AUthentication Required",
         598:"Network read timeout error",599:"Network connect timeout error"}
 
-if len(sys.argv) == 1:
-    print("Usage: python fuzzer.py http://URL PATH_TO_WORDLIST \n")
-else:
-    print("Usage: python fuzzer.py http://URL PATH_TO_WORDLIST \n")
-    sys.argv.pop(0)
-    file = sys.argv[1]
-    webpage = sys.argv[0]
-    with open(file, "r") as wordlist:
-        word_list = []
-        for index in wordlist:
-            word_list.append(index.strip())
-    r = requests.get(webpage)
-    if r.status_code == 200:
-        for index in tqdm(word_list):
-            new_url = webpage + '/' + index
-            page = requests.get(new_url)
-            status = page.status_code
-            for i in status_codes:
-                if status == i:
-                    if i == 404:
-                        pass
-                    else:
-                        msg = "{} : {}".format(new_url,status_codes[i])
-                        tqdm.write(msg)
+def webpage(wordlist, url):
+    pages = 0
+    r = requests.get(url)
+    #if r.status_code == 200:
+    for index in tqdm(wordlist):
+        pass
+        new_url = url.replace("FUZZ",index)
+        page = requests.get(new_url)
+        status = page.status_code
+        for i in status_codes:
+            if status == i:
+                if i == 404:
+                    pass
+                else:
+                    pages += 1
+                    msg = "{} : {}".format(new_url,status_codes[i])
+                    tqdm.write(msg)
+    if pages == 0:
+        print("Nothing Found")
     else:
-        print("Could Not Resolve Host")
+        print("#" * 80)
+        print("Finished :) - Feel free to follow me on Twitter @A_L_E_X_H_A_L_L")
+        print("#" * 80)
+                    
+
+
+def wordlist(wordlist, url):
+    url = url
+    with open(wordlist, "r") as wordlist_:
+        word_list = []
+        for index in wordlist_:
+            word_list.append(index.strip())
+    webpage(word_list, url)
+      
+
+
+
+
+
+def main(user_input):
+    print("#" * 60)
+    print("#" * 60)
+    print("\n")
+    print(r""" _       __     __         _ __          ______                         
+| |     / /__  / /_  _____(_) /____     / ____/_  __________  ___  _____
+| | /| / / _ \/ __ \/ ___/ / __/ _ \   / /_  / / / /_  /_  / / _ \/ ___/
+| |/ |/ /  __/ /_/ (__  ) / /_/  __/  / __/ / /_/ / / /_/ /_/  __/ /    
+|__/|__/\___/_.___/____/_/\__/\___/  /_/    \__,_/ /___/___/\___/_/     
+                                                                        
+    ______              __    _                 
+   / ____/___  _____   / /   (_)___  __  ___  __
+  / /_  / __ \/ ___/  / /   / / __ \/ / / / |/_/
+ / __/ / /_/ / /     / /___/ / / / / /_/ />  <  
+/_/    \____/_/     /_____/_/_/ /_/\__,_/_/|_|  Version 1.0""")
+    print("\n")
+    print("Twitter: @A_L_E_X_H_A_L_L")
+    print("#" * 60)
+    print("#" * 60)
+    if len(user_input) == 1:
+        tqdm.write("\nUsage: python fuzzer.py http://URL PATH_TO_WORDLIST \n")
+    else:
+        tqdm.write("\nUsage: python fuzzer.py http://URL PATH_TO_WORDLIST \n")
+        file = user_input[2]
+        webpage = user_input[1]
+    wordlist(file,webpage)
+        
+
+main(sys.argv)
